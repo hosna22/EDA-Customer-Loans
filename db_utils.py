@@ -33,7 +33,7 @@ class RDSDatabaseConnector:
         a list. The list values are indexed to insert the correct details in the create_engine function to 
         create an engine. 
         """
-        credentials = load_yaml('eda-project/EDA-Customer-Loans/credentials.yaml')
+        credentials = load_yaml('credentials.yaml')
         engine = create_engine(f"postgresql://{credentials[2]}:{credentials[1]}@{credentials[0]}:{credentials[4]}/{credentials[3]}")
         return (engine)
 
@@ -58,16 +58,19 @@ def save_to_csv():
     credentials.yaml file to return the loan_payments dataframe. The .csv funciton is used to save
     the database as a csv file to speed up loading up the data when performing analytics. 
     """
-    extracted_df = RDSDatabaseConnector('eda-project/EDA-Customer-Loans/credentials.yaml').extract_database_data()
+    extracted_df = RDSDatabaseConnector('credentials.yaml').extract_database_data()
     loan_payments_csv = extracted_df.to_csv('loan_payments.csv', index=False)
     return (loan_payments_csv)
 
-def create_df(filname):
+def create_df():
     """
-    This method creates a Pandas dataframe from the csv file. 
+    This function creates a Pandas dataframe from the csv file. 
 
-    The method passes the file name as a parameter. It uses the Pandas read_csv function to read the csv and
-    returns it as a dataframe. 
+    The funtion runs the save_to_csv function to access the csv file. It uses the Pandas read_csv function to read the file and
+    return it as a dataframe. Also, the set_option funciton is used to show all columns when the dataframe is displayed.  
     """
-    df = pd.read_csv(filname)
+    save_to_csv()
+    df = pd.read_csv('loan_payments.csv')
+    pd.set_option('display.max_columns', None)
     return(df)
+
