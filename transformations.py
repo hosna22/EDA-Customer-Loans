@@ -40,17 +40,11 @@ class DataTransform:
             dataframe.loc[:, col] = dataframe[col].map(lambda i: np.log(i) if i > 0 else 0.0)
         return(dataframe)
 
-    def corect_skew_sqrt(self, dataframe, *args):   
+    def correct_skew_sqrt(self, dataframe, *args):   
         for col in args:
             dataframe[col] = dataframe[col].map(lambda i: np.sqrt(i))
         return(dataframe)
     
-    def correct_skew_yeo_johnson(self, dataframe, *args):
-        copy_df=dataframe.copy()
-        for col in args:
-          transformed, _ = stats.yeojohnson(copy_df[col])
-          copy_df[col] = transformed
-        return(copy_df)
 
 class DataFrameInfo:
     def __init__(self):
