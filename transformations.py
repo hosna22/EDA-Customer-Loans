@@ -92,7 +92,7 @@ class Plotter:
     def plot_null(self, dataframe):
         msno.bar(dataframe)
     
-    def plot_all_skew_grid(self, dataframe): 
+    def plot_kde_all_grid(self, dataframe): 
         numeric_features = ['loan_amount',
                     'funded_amount',
                     'funded_amount_inv',
@@ -130,4 +130,25 @@ class Plotter:
         f = pd.melt(dataframe, value_vars=numeric_features)
         g = sns.FacetGrid(f, col="variable", col_wrap=3, sharex=False, sharey=False)
         g.map_dataframe(facet_hist)
+        plt.show()
+
+    def plot_box_plot_all(self, dataframe, *args):
+        def outlier_num(dataframe, col):
+            Q1 = dataframe[col].quantile(0.25)
+            Q3 = dataframe[col].quantile(0.75)
+            IQR = Q3-Q1
+            outliers = dataframe[(dataframe[col]<(Q1-1.5*IQR)) | (dataframe[col]>(Q3+1.5*IQR))]
+            return(len(outliers[col]))
+
+        fig, axs = plt.subplots(8, 3, figsize=(10, 30))
+        axs = axs.flatten()
+
+        for i, col in enumerate(args):
+            sns.boxplot(data=dataframe, y=col, ax=axs[i], flierprops=dict(marker='o', markerfacecolor='red', 
+                    markersize=4, markeredgewidth=0.1))
+            axs[i].text(0.7, 0.80, f'Number of \nOutliers: {outlier_num(dataframe, col)}', transform=axs[i].transAxes,
+                    fontsize=10, color='black', backgroundcolor='white', alpha=0.7)
+    
+            
+        plt.tight_layout()
         plt.show()
