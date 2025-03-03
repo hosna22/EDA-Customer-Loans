@@ -132,7 +132,7 @@ class Plotter:
         g.map_dataframe(facet_hist)
         plt.show()
 
-    def plot_box_plot_all(self, dataframe, *args):
+    def plot_box_plots_grid(self, dataframe, *args):
         def outlier_num(dataframe, col):
             Q1 = dataframe[col].quantile(0.25)
             Q3 = dataframe[col].quantile(0.75)
@@ -151,4 +151,11 @@ class Plotter:
     
             
         plt.tight_layout()
+        plt.show()
+
+    def plot_correlation_matrix(self, dataframe):
+        fig, ax = plt.subplots(figsize=(14,14))  
+        sns.heatmap(dataframe.corr(numeric_only=True).round(2), cmap='coolwarm', annot=True, annot_kws={'fontsize':8}, linewidths=.5)
+        plt.yticks(size=10)
+        plt.xticks(size=10)
         plt.show()
