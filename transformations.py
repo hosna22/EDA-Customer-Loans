@@ -3,7 +3,6 @@ import missingno as msno
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
-from scipy import stats
 
 class DataTransform:
     def __init__(self):
