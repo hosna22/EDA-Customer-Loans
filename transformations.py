@@ -92,6 +92,11 @@ class Plotter:
     def plot_null(self, dataframe):
         msno.bar(dataframe)
     
+    def plot_hist_kde(self, dataframe, col, title):
+        sns.histplot(data=dataframe, x=col, kde=True)
+        plt.title(title)
+        plt.show()
+
     def plot_kde_all_grid(self, dataframe): 
         numeric_features = ['loan_amount',
                     'funded_amount',
@@ -158,4 +163,17 @@ class Plotter:
         sns.heatmap(dataframe.corr(numeric_only=True).round(2), cmap='coolwarm', annot=True, annot_kws={'fontsize':8}, linewidths=.5)
         plt.yticks(size=10)
         plt.xticks(size=10)
+        plt.show()
+
+    def plot_barplot_all_grid(self, dataframe, *args):
+        fig, axs = plt.subplots(6, 2, figsize=(15, 40))
+        fig.suptitle('Discrete Probability Distribution', fontsize=18)
+        axs = axs.flatten()
+        for i, col in enumerate (args):
+            probs=dataframe[col].value_counts(normalize=True)
+            sns.barplot(y=probs.values, x=probs.index, ax=axs[i])
+            axs[i].set_xticklabels(axs[i].get_xticklabels(), rotation=90)
+            axs[i].set_xlabel('Values')
+            axs[i].set_ylabel('Probability')
+        plt.tight_layout(rect=[0, 0, 1, 0.98])
         plt.show()
