@@ -177,3 +177,40 @@ class Plotter:
             axs[i].set_ylabel('Probability')
         plt.tight_layout(rect=[0, 0, 1, 0.98])
         plt.show()
+    
+    def plot_two_barplots(self, x_values_1, y_values_1, x_label_1, y_label_1, title_1, x_value_2, y_values_2, x_label_2, y_label_2, title_2, plot_title):
+        fig, axs = plt.subplots(1, 2, figsize=(15, 5))
+        sns.barplot(x=x_values_1, y=y_values_1, ax=axs[0])
+        sns.barplot(x=x_value_2, y=y_values_2, ax=axs[1])
+
+        axs[0].set_xlabel(x_label_1)
+        axs[1].set_xlabel(x_label_2)
+
+        axs[0].set_ylabel(y_label_1)
+        axs[1].set_ylabel(y_label_2)
+
+        axs[0].set_title(title_1)
+        axs[1].set_title(title_2)
+
+        plt.suptitle(plot_title, fontsize='18')
+        plt.show()
+
+
+class Analysis:
+    def __init__(self):
+        pass
+
+    def monthly_instalment_amount(self, dataframe, period: int):
+        dataframe['total_to_be_paid'] = dataframe['instalment']*dataframe['term']
+        instalments = []
+        for i in range(1, (period+1)):
+            result = dataframe['instalment'].sum()
+            instalments.append(round(result*i, 2))
+        return instalments
+
+    def monthly_instalment_percentage_outstanding(self, dataframe, period: int):
+        instalments = self.monthly_instalment_amount(dataframe, period)
+        percentage_results = []
+        for i in instalments:
+            percentage_results.append(round(i/(dataframe['total_to_be_paid'].sum()-dataframe['total_payment'].sum())*100,2))
+        return percentage_results
