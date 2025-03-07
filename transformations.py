@@ -27,7 +27,7 @@ class DataTransform:
             dataframe[col] = pd.to_datetime(dataframe[col], format='%b-%Y', errors='coerce')
         return(dataframe)
     
-    def employment_number_system(self, dataframe, col):
+    def employment_number_system(self, dataframe):
         """
         Map employment length column values from string to a numeric scale and convert the column to numeric type.
 
@@ -39,10 +39,25 @@ class DataTransform:
             The dataframe with the employment length column converted to numeric values.
         """
         map_dict = {'<1 year':'1', '1 year':'2', '2 years':'3', '3 years':'4', '4 years':'5', '5 years':'6', '6 years':'7', '7 years':'8', '8 years':'9', '9 years':'10', '10+ years':'11'}
-        dataframe[col] = dataframe[col].map(map_dict)
-        dataframe[col] = pd.to_numeric(dataframe[col], downcast='signed', errors='coerce')
+        dataframe['employment_length'] = dataframe['employment_length'].map(map_dict)
+        dataframe['employment_length'] = pd.to_numeric(dataframe['employment_length'], downcast='signed', errors='coerce')
         return(dataframe)
     
+    def convert_employment_back(self, dataframe):
+        """
+        Map employment length column numeric type back to original values
+
+        Parameters:
+            dataframe: The dataframe containing the employment length column.
+            col (str): The column name representing employment length.
+
+        Returns:
+            The dataframe with the employment length column converted to original values
+        """
+        map_dict = {1.0:'<1 year', 2.0:'1 year', 3.0:'2 years', 4.0:'3 years', 5.0:'4 years', 6.0:'5 years', 7.0:'6 years', 8.0:'7 years', 9.0:'8 years', 10.0:'9 years', 11.0:'10+ years'}
+        dataframe['employment_length'] = dataframe['employment_length'].map(map_dict)
+        return(dataframe)
+
     def numeric_format(self, dataframe, col, phrase):
         """
         Remove a specified phrase from a column and convert it to numeric.
@@ -150,7 +165,7 @@ class DataFrameInfo:
         Print basic statistics (mean, median, mode, standard deviation) for specified columns.
 
         Parameters:
-            dataframe: The dataframe to analyze.
+            dataframe: The dataframe to analyse.
             *args: Column names for which to compute statistics.
         
         The method uses a for loop for identify the mean, median, mode and standard deviation for each column 
@@ -168,7 +183,7 @@ class DataFrameInfo:
         Print the count of distinct values for a set of categorical columns.
 
         Parameters:
-            dataframe: The dataframe to analyze.
+            dataframe: The dataframe to analyse.
 
         The method uses pandas nunique to print the number of unique values in the catergorical columns which is 
         provided in a list.
@@ -248,7 +263,7 @@ class Plotter:
             dataframe: The dataframe containing numeric features.
 
      
-        This method first defines a list of numeric features to analyze. The facet_hist function plots a histogram 
+        This method first defines a list of numeric features to analyse. The facet_hist function plots a histogram 
         with a KDE for the data's "value" column, calculates the skewness of that column, and then annotates the 
         plot with the skewness value. It first obtains the current axis, plots the data, and then places a text label 
         on the axis.Pandas melt is used to reshape the dataframe from wide to long format, so that each numeric column
@@ -331,7 +346,7 @@ class Plotter:
         Plot a heatmap of the correlation matrix for the dataframe's numeric columns.
 
         Parameters:
-            dataframe: The dataframe to analyze.
+            dataframe: The dataframe to analyse.
         
         The method creates figure with pyplots subplots to control the size of the figure. Seaborn's 
         heatmap is used to create heatmap, using the data from pandas .corr to compute pairwise 
@@ -449,42 +464,152 @@ class Plotter:
         The method uses an if statement to check if an explode has been provided. If so, it is computed 
         in pie chart, and if not a pie chart is computed without an explode. 
         """
+        colour_palette = ['#a6e1e3', '#fdbf6f', '#b2df8a', '#fb9a99', '#cab2d6', '#ffff99', '#4ba1cc', '#33a02c']
         data = np.array(values)
         data_labels = labels
         fig, ax = plt.subplots()
 
         if explode is not None:
-            ax.pie(data, labels=data_labels, autopct='%1.1f%%', explode=explode)
+            ax.pie(data, labels=data_labels, autopct='%1.1f%%', colors=colour_palette, explode=explode)
         else:
-            ax.pie(data, labels=data_labels, autopct='%1.1f%%')
+            ax.pie(data, labels=data_labels, colors=colour_palette, autopct='%1.1f%%')
 
         plt.title(title, y=1.05)
         plt.show()
 
-    def plot_three_line_chart(self, x1, y1, label1, x2, y2, label2, x3, y3, label3, xlabel, ylabel, title):
+    
+    def plot_two_barplots(self, x_values_1, y_values_1, x_label_1, y_label_1, title_1, x_value_2, y_values_2, x_label_2, y_label_2, title_2, plot_title):
         """
-        Plot three line charts on a single figure with legends.
+        Plot two bar plots side by side.
 
         Parameters:
-            x1, y1 (list): Data for the first line chart.
-            label1 (str): Label for the first line.
-            x2, y2 (list): Data for the second line chart.
-            label2 (str): Label for the second line.
-            x3, y3 (list): Data for the third line chart.
-            label3 (str): Label for the third line.
-            xlabel (str): Label for the x-axis.
-            ylabel (str): Label for the y-axis.
-            title (str): Title of the chart.
+            x_values_1, y_values_1 (list): Data for the first bar plot.
+            x_label_1 (str): X-axis label for the first plot.
+            y_label_1 (str): Y-axis label for the first plot.
+            title_1 (str): Title for the first plot.
+            x_value_2, y_values_2 (list): Data for the second bar plot.
+            x_label_2 (str): X-axis label for the second plot.
+            y_label_2 (str): Y-axis label for the second plot.
+            title_2 (str): Title for the second plot.
+            plot_title (str): Overall title for the figure.
+
+        The method uses the axs index to plot the correct data in the right graph. 
         """
-        plt.plot(x1, y1, label=label1,  marker='o')
-        plt.plot(x2, y2, label=label2, marker='x')
-        plt.plot(x3, y3, label=label3)
-        plt.xlabel(xlabel)
-        plt.ylabel(ylabel)
-        plt.xticks(rotation=90)
-        plt.title(title)
-        plt.legend(loc='upper right', bbox_to_anchor=(1.5, 1))
+        fig, axs = plt.subplots(1, 2, figsize=(15, 5))
+        sns.barplot(x=x_values_1, y=y_values_1, ax=axs[0])
+        sns.barplot(x=x_value_2, y=y_values_2, ax=axs[1])
+
+        axs[0].set_xlabel(x_label_1)
+        axs[1].set_xlabel(x_label_2)
+
+        axs[0].set_ylabel(y_label_1)
+        axs[1].set_ylabel(y_label_2)
+
+        axs[0].set_title(title_1)
+        axs[1].set_title(title_2)
+
+        plt.suptitle(plot_title, fontsize='18')
         plt.show()
+
+    def discrete_value_risk_comparison(self, dataframe, col):
+        """
+        Plot a grid of pie charts and bar plots comparing the distribution of a discrete variable across loan risk categories.
+
+        Parameters:
+            dataframe: The dataset containing loan information.
+            col (str): The name of the discrete column to analyse.
+
+        This method divides the loan data into four groups:
+        - All Loans (the complete dataset)
+        - Fully Paid Loans (loans with a 'Fully Paid' status)
+        - Charged Off/Default Loans (loans where the status contains 'charged off' or 'default')
+        - At-Risk Loans (loans that are either marked as 'late' or have a payment plan)
+
+        For each group, it computes the normalised value counts of the specified column and visualizes these as:
+        - Pie charts (displayed in the top row) showing the percentage distribution.
+        - Bar plots (displayed in the bottom row) showing the same distribution.
+
+        Returns:
+            Displays the generated grid of plots.
+        """
+        #Get dataframes 
+        df = dataframe # All loans
+        charged_off_mask = (dataframe['loan_status'].str.contains('charged off', case=False) | dataframe['loan_status'].str.contains('default', case=False))
+        paid_df = dataframe[dataframe['loan_status'] == 'Fully Paid'] # Fully Paid Loans
+        charged_default_df = dataframe[charged_off_mask] # charged off or default loans
+        late_loans_mask = ((dataframe['loan_status'].str.contains('late', case=False)) | (dataframe['payment_plan'] == 'y'))
+        at_risk_df = dataframe[late_loans_mask]# risky loans
+    
+        # Generate plot
+        fig, axs = plt.subplots(2, 4, figsize=(20, 10))
+        colour_palette = ['#a6e1e3', '#fdbf6f', '#b2df8a', '#fb9a99', '#cab2d6', '#ffff99', '#4ba1cc']
+        axs[0, 0].set_title('All Loans')
+        axs[0, 1].set_title('Fully Paid Loans')
+        axs[0, 2].set_title('Charged off and Default Loans')
+        axs[0, 3].set_title('Risky Loans')
+
+        # Find probabilities for the values 
+        probabilities = df[col].value_counts(normalize=True)
+        paid_probabilities = paid_df[col].value_counts(normalize=True)
+        charged_default_probabilities = charged_default_df[col].value_counts(normalize=True)
+        at_risk_probabilities = at_risk_df[col].value_counts(normalize=True)
+
+        # Pie charts
+        axs[0, 0].pie((list(probabilities.values)), labels=(list(probabilities.index)), colors=colour_palette, autopct='%1.1f%%')
+        axs[0, 1].pie((list(paid_probabilities.values)), labels=(list(paid_probabilities.index)), colors=colour_palette, autopct='%1.1f%%')
+        axs[0, 2].pie((list(charged_default_probabilities.values)), labels=(list(charged_default_probabilities.index)), colors=colour_palette, autopct='%1.1f%%')
+        axs[0, 3].pie((list(at_risk_probabilities.values)), labels=(list(at_risk_probabilities.index)), colors=colour_palette, autopct='%1.1f%%')
+
+        # Bar plots
+        sns.barplot(y=probabilities.values, x=probabilities.index, ax=axs[1,0])
+        sns.barplot(y=paid_probabilities.values, x=paid_probabilities.index, ax=axs[1,1])
+        sns.barplot(y=charged_default_probabilities.values, x=charged_default_probabilities.index, ax=axs[1,2])
+        sns.barplot(y=at_risk_probabilities.values, x=at_risk_probabilities.index, ax=axs[1,3])
+
+        axs[1,0].set_xticklabels(probabilities.index, rotation=90)
+        axs[1,1].set_xticklabels(paid_probabilities.index, rotation=90)
+        axs[1,2].set_xticklabels(charged_default_probabilities.index, rotation=90)
+        axs[1,3].set_xticklabels(at_risk_probabilities.index, rotation=90)
+        
+        plt.suptitle(f'Comparison of {col} Distributions Across Loan Risk Categories', fontsize='xx-large') 
+        plt.tight_layout()
+        return plt.show()
+
+    def continuous_value_risk_comparison(self, dataframe, col):
+
+        # Get dataframes 
+        df = dataframe # All loans
+        paid_df = dataframe[dataframe['loan_status'] == 'Fully Paid'] # Fully Paid Loans
+        charged_off_mask = (dataframe['loan_status'].str.contains('charged off', case=False) | dataframe['loan_status'].str.contains('default', case=False))
+        charged_default_df = dataframe[charged_off_mask] # charged off or default loans
+        late_loans_mask = ((dataframe['loan_status'].str.contains('late', case=False)) | (dataframe['payment_plan'] == 'y'))
+        at_risk_df = dataframe[late_loans_mask]# risky loans
+
+        # Generate plot
+        fig, axs = plt.subplots(2, 4, figsize=(15, 8))
+        
+        axs[0, 0].set_title(f'All Loans \nMean: {round(df[col].mean(),1)}')
+        axs[0, 1].set_title(f'Fully Paid Loans \nMean: {round(paid_df[col].mean(),1)}')
+        axs[0, 2].set_title(f'Charged off and Default Loans \nMean: {round(charged_default_df[col].mean(),1)}')
+        axs[0, 3].set_title(f'Risky Loans \nMean: {round(at_risk_df[col].mean(),1)}')
+
+        # Histograms 
+        sns.histplot(data=df, x=col, kde=True, ax=axs[0, 0])
+        sns.histplot(data=paid_df, x=col, kde=True, ax=axs[0, 1])
+        sns.histplot(data=charged_default_df, x=col, kde=True, ax=axs[0, 2])
+        sns.histplot(data=at_risk_df, x=col, kde=True, ax=axs[0, 3])
+
+        # Violin plots
+        sns.violinplot(data=df, y=col, ax=axs[1, 0])
+        sns.violinplot(data=paid_df, y=col, ax=axs[1, 1])
+        sns.violinplot(data=charged_default_df, y=col, ax=axs[1, 2])
+        sns.violinplot(data=at_risk_df, y=col, ax=axs[1, 3])
+
+        plt.suptitle(f'Comparison of {col} Distributions Across Loan Risk Categories', fontsize='xx-large') # Overall Plot title
+        plt.tight_layout()
+        return plt.show()
+
+
 
 class Analysis:
     """
