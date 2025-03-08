@@ -28,7 +28,7 @@ Making informed lending decisions starts with understanding the data. In this pr
 ## Getting started
 I structured the project to keep the code organised and easy to manage. The db_utils.py file handles the database connection using an RDSDatabaseConnector class, which connects to the AWS RDS database and extracts the customer loans dataset. The connection details are stored securely in a credentials.yaml file, which is ignored by Git to protect sensitive information. There’s also a function that saves the extracted data as a CSV file locally for easier access during analysis and a create_df function which creates a dataframe from the csv file. 
 
-For working with the data, I created a transformations.py file, which includes three main classes:
+For working with the data, I created a transformations.py file, which includes four main classes:
 - DataTransform - applies transformations to clean and prepare the data
 - DataFrameInfo – helps me quickly check important information about the dataset
 - Plotter – handles visualisations to help spot trends and patterns
@@ -37,6 +37,11 @@ For working with the data, I created a transformations.py file, which includes t
 All of this comes together in two notebooks:
 - EDA.ipynb: This notebook focuses on exploratory data analysis, including data loading, cleaning, and initial visualisations to understand the overall structure and distribution of the data.
 - analysis.ipynb: This notebook dives deeper into statistical analyses, examines risk factors, and visualizes key insights such as recovery rates and projected losses.
+
+Loan payments file versions:
+- loan_payments.csv (Raw Data)
+- loan_payments_no_null.csv (post null removal and imputation)
+- loan_payments_transformed.csv (fully cleaned and transformed dataset)
 
 ### Built with
 - Python verison 3
@@ -68,10 +73,10 @@ EDA.ipynb file
 
 ## Usage Instructions
 1. The csv file containing the dataset from the AWS database is saved in the repository as 'loan_payments.csv'
-  - **SKIP** Normally, you would run the 'db_utils.py' to extract the dataset from the AWS database and save it locally as a csv file. However, you need access to the credentials.yaml file which is confidential. 
+    - **SKIP** Normally, you would run the 'db_utils.py' to extract the dataset from the AWS database and save it locally as a csv file. However, you need access to the credentials.yaml file which is confidential. 
 2. Open and run the 'EDA.ipynb' notebook. This contains exploratory data analysis where the data is cleaned and transformed.
-  - This involved removing and imputing nulls, optimising skewness, checking outliers and identify correlation.
-  - The process is explained in the notebook.
+    - This involved removing and imputing nulls, optimising skewness, checking outliers and identify correlation.
+    - The process is explained in the notebook.
 3. Open and run the 'analysis.ipynb' notebook. This contains statistical analysis which provides insights, conclusions and visualisations from the dataset. 
 
 ## Learnings
