@@ -4,8 +4,8 @@ EDA project with AiCore's data analytics course
 - [Introduction](#introduction)
 - [Short Summary of Findings](#short-summary-of-findings)
 - [Getting Started](#getting-started)
-- [Installation Instructions](#installation_instructions)
-- [Usage Instructions](#usage_instructions)
+- [Installation Instructions](#installation-instructions)
+- [Usage Instructions](#usage-instructions)
 - [Learnings](#learnings)
 
 ## Introduction
