@@ -90,5 +90,8 @@ I gained experience managing skewed data, especially when caused by lots of zero
 #### Outliers and Correlated Data
 I understood why outliers and highly correlated features shouldn't always be removed, as they can hold important insights and can represent real data.
 
+#### Graphical Representation
+I learnt how to select the appropriate graphs to represent different data types to effectively visualise distributions and trends - using pie charts and bar plots for discrete data, and histograms with KDE overlays and violin plots graphs for continuous data. 
+
 #### Workflow and Structure
 This project helped me structure my code with reusable classes, making my analysis clear and easy to manage.
