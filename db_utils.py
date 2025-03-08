@@ -71,6 +71,7 @@ def create_df():
     """
     save_to_csv()
     df = pd.read_csv('loan_payments.csv')
-    pd.set_option('display.max_columns', None)
     return(df)
 
+if __name__ == '__main__':
+    save_to_csv()

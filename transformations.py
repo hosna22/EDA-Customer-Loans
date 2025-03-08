@@ -541,7 +541,7 @@ class Plotter:
         at_risk_df = dataframe[late_loans_mask]# risky loans
     
         # Generate plot
-        fig, axs = plt.subplots(2, 4, figsize=(20, 10))
+        fig, axs = plt.subplots(2, 4, figsize=(15, 8))
         colour_palette = ['#a6e1e3', '#fdbf6f', '#b2df8a', '#fb9a99', '#cab2d6', '#ffff99', '#4ba1cc']
         axs[0, 0].set_title('All Loans')
         axs[0, 1].set_title('Fully Paid Loans')
@@ -566,12 +566,12 @@ class Plotter:
         sns.barplot(y=charged_default_probabilities.values, x=charged_default_probabilities.index, ax=axs[1,2])
         sns.barplot(y=at_risk_probabilities.values, x=at_risk_probabilities.index, ax=axs[1,3])
 
-        axs[1,0].set_xticklabels(probabilities.index, rotation=90)
-        axs[1,1].set_xticklabels(paid_probabilities.index, rotation=90)
-        axs[1,2].set_xticklabels(charged_default_probabilities.index, rotation=90)
-        axs[1,3].set_xticklabels(at_risk_probabilities.index, rotation=90)
+        axs[1,0].tick_params(axis='x', rotation=90)
+        axs[1,1].tick_params(axis='x', rotation=90)
+        axs[1,2].tick_params(axis='x', rotation=90)
+        axs[1,3].tick_params(axis='x', rotation=90)
         
-        plt.suptitle(f'Comparison of {col} Distributions Across Loan Risk Categories', fontsize='xx-large') 
+        plt.suptitle(f'Comparison of {col} Distributions Across Loan Risk Categories', fontsize='xx-large', y=1.02) 
         plt.tight_layout()
         return plt.show()
 
